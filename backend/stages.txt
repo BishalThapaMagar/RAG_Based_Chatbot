@@ -1,0 +1,278 @@
+RAG BACKEND DEVELOPMENT PLAN
+============================
+
+PHASE 1 — FASTAPI FOUNDATION
+Goal:
+- Boot backend properly
+
+Files:
+backend/app/
+├── main.py
+├── core/
+│   ├── config.py
+│   └── database.py
+│
+├── api/
+│   └── health.py
+
+Implement:
+- FastAPI app
+- CORS
+- env loading
+- PostgreSQL connection
+- health endpoint
+
+Result:
+- Backend server runs successfully
+- GET /health works
+
+
+
+PHASE 2 — DATABASE SETUP
+Goal:
+- Configure PostgreSQL + pgvector
+
+Files:
+backend/app/
+├── db/
+│   ├── postgres.py
+│   └── pgvector.py
+│
+├── models/
+│   ├── document.py
+│   ├── chunk.py
+│   └── chat.py
+
+Implement:
+- SQLAlchemy setup
+- pgvector extension
+- Document table
+- Chunk table
+- Chat table
+
+Result:
+- Database stores documents, chunks, vectors
+
+
+
+PHASE 3 — PDF UPLOAD SYSTEM
+Goal:
+- Upload PDFs from frontend
+
+Files:
+backend/app/
+├── api/
+│   └── upload.py
+│
+├── schemas/
+│   └── upload.py
+│
+├── services/
+│   └── pdf_service.py
+│
+└── uploads/
+    └── pdfs/
+
+Implement:
+- PDF upload endpoint
+- PDF validation
+- Save PDFs locally
+- Extract PDF text
+
+Recommended:
+- PyMuPDF (fitz)
+
+Result:
+- Upload works
+- Text extraction works
+
+
+
+PHASE 4 — TEXT CHUNKING
+Goal:
+- Split extracted text into chunks
+
+Files:
+backend/app/
+└── rag/
+    └── chunking.py
+
+Implement:
+- chunking strategy
+- chunk overlap
+- metadata
+- page tracking
+
+Result:
+- PDFs become retrievable chunks
+
+
+
+PHASE 5 — EMBEDDINGS
+Goal:
+- Convert chunks into vectors
+
+Files:
+backend/app/
+├── services/
+│   └── embedding_service.py
+│
+└── rag/
+    └── embeddings.py
+
+Implement:
+- embedding generation
+- Gemini embeddings OR sentence-transformers
+
+Result:
+- Chunks become embeddings
+
+
+
+PHASE 6 — PGVECTOR STORAGE
+Goal:
+- Store embeddings in PostgreSQL
+
+Files:
+backend/app/
+├── services/
+│   └── vector_service.py
+│
+└── db/
+    └── pgvector.py
+
+Implement:
+- vector insertions
+- similarity search
+- cosine distance search
+
+Result:
+- Vector database retrieval works
+
+
+
+PHASE 7 — RETRIEVAL SYSTEM
+Goal:
+- Retrieve relevant chunks
+
+Files:
+backend/app/
+├── services/
+│   └── retrieval_service.py
+│
+└── rag/
+    └── retriever.py
+
+Implement:
+- query embeddings
+- similarity search
+- top-k retrieval
+
+Result:
+- Relevant chunks are retrieved
+
+
+
+PHASE 8 — PROMPT PIPELINE
+Goal:
+- Build grounded prompts
+
+Files:
+backend/app/
+└── rag/
+    ├── prompts.py
+    └── pipeline.py
+
+Implement:
+- system prompts
+- context injection
+- final prompt assembly
+
+Result:
+- Gemini receives grounded context
+
+
+
+PHASE 9 — GEMINI INTEGRATION
+Goal:
+- Generate final RAG responses
+
+Files:
+backend/app/
+├── api/
+│   └── chat.py
+│
+├── schemas/
+│   └── chat.py
+│
+└── services/
+    ├── llm_service.py
+    └── chat_service.py
+
+Implement:
+- Gemini API calls
+- chat endpoint
+- response generation
+
+Result:
+- Full RAG pipeline works
+
+
+
+PHASE 10 — FRONTEND CONNECTION
+Goal:
+- Connect frontend with backend
+
+Frontend files modified:
+src/
+├── services/
+│   ├── api.js
+│   └── stream.js later
+│
+├── features/
+│   ├── chat/
+│   │   ├── chatAPI.js
+│   │   └── useChat.js
+│   │
+│   ├── upload/
+│   │   ├── uploadAPI.js
+│   │   └── useUpload.js
+│   │
+│   └── conversations/
+│       └── conversationAPI.js
+
+Implement:
+- frontend API calls
+- upload requests
+- chat requests
+- restore conversations later
+
+Result:
+- Fullstack app works
+
+
+
+PHASE 11 — STREAMING RESPONSES
+Goal:
+- Real-time token streaming
+
+Files:
+backend/app/
+├── api/
+│   └── chat.py
+│
+└── services/
+    └── llm_service.py
+
+Frontend:
+src/services/
+└── stream.js
+
+Implement:
+- FastAPI StreamingResponse
+- token streaming
+- frontend chunk parsing
+- live UI updates
+
+Result:
+- ChatGPT-like streaming UX

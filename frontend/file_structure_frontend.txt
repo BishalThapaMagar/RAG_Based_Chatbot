@@ -1,0 +1,140 @@
+CURRENT FRONTEND FILE STRUCTURE
+
+src/
+├── main.jsx
+│   React entry point.
+│   Wraps app with Redux Provider.
+│
+├── App.jsx
+│   Loads routes.
+│
+├── index.css
+│   Global Tailwind styles.
+│
+├── routes/
+│   └── AppRoutes.jsx
+│       Defines app routes.
+│
+├── layouts/
+│   └── MainLayout.jsx
+│       Global app shell layout.
+│       Sidebar + Header + Main area.
+│
+├── store/
+│   └── store.js
+│       Redux global store config.
+│
+├── components/
+│
+│   ├── layout/
+│   │
+│   │   ├── Sidebar.jsx
+│   │   │   Chat history sidebar.
+│   │   │
+│   │   ├── Header.jsx
+│   │   │   Top navigation/header.
+│   │   │
+│   │   └── MainContainer.jsx
+│   │       Main content wrapper.
+│   │
+│   ├── chat/
+│   │
+│   │   ├── Chat.jsx
+│   │   │   Main chat orchestrator.
+│   │   │
+│   │   ├── ChatMessages.jsx
+│   │   │   Renders messages list.
+│   │   │
+│   │   ├── MessageBubble.jsx
+│   │   │   Single chat message UI.
+│   │   │
+│   │   ├── MessageActions.jsx
+│   │   │   Copy/retry/edit actions.
+│   │   │
+│   │   ├── TypingIndicator.jsx
+│   │   │   AI typing animation.
+│   │   │
+│   │   ├── ChatInput.jsx
+│   │   │   Textarea + upload + send.
+│   │   │
+│   │   └── EmptyState.jsx
+│   │       Initial landing state.
+│   │
+│   ├── upload/
+│   │
+│   │   ├── UploadButton.jsx
+│   │   │   + upload button.
+│   │   │
+│   │   ├── UploadModal.jsx
+│   │   │   Future upload modal.
+│   │   │
+│   │   ├── FileDropzone.jsx
+│   │   │   Drag/drop wrapper.
+│   │   │
+│   │   ├── FilePreview.jsx
+│   │   │   Uploaded file chips.
+│   │   │
+│   │   └── UploadProgress.jsx
+│   │       Upload progress UI.
+│   │
+│   └── message/
+│
+│       └── MarkdownRenderer.jsx
+│           Renders AI markdown.
+│
+├── pages/
+│
+│   └── ChatPage.jsx
+│       Loads Chat component.
+│
+├── services/
+│
+│   ├── api.js
+│   │   Global API config.
+│   │
+│   └── stream.js
+│       Streaming engine.
+│
+├── features/
+│
+│   ├── chat/
+│   │
+│   │   ├── chatSlice.js
+│   │   │   Redux chat state.
+│   │   │
+│   │   ├── chatAPI.js
+│   │   │   Chat backend requests.
+│   │   │
+│   │   ├── useChat.js
+│   │   │   Chat frontend logic.
+│   │   │
+│   │   └── chatUtils.js
+│   │       Chat helper functions.
+│   │
+│   ├── upload/
+│   │
+│   │   ├── uploadSlice.js
+│   │   │   Upload redux state.
+│   │   │
+│   │   ├── uploadAPI.js
+│   │   │   Upload backend requests.
+│   │   │
+│   │   ├── useUpload.js
+│   │   │   Upload frontend logic.
+│   │   │
+│   │   └── uploadUtils.js
+│   │       Upload helper functions.
+│   │
+│   └── conversations/
+│
+│       ├── conversationSlice.js
+│       │   Conversation redux state.
+│       │
+│       ├── conversationAPI.js
+│       │   Conversation backend requests.
+│       │
+│       ├── useConversations.js
+│       │   Conversation frontend logic.
+│       │
+│       └── conversationUtils.js
+│           Conversation helper functions.

@@ -210,3 +210,77 @@ export default cartSlice.reducer;
 
 
 dispatch(addItem(product))
+
+
+
+
+
+// CHAT component structure
+pages/
+└── ChatPage.jsx
+
+components/
+└── chat/
+    ├── Chat.jsx
+    ├── ChatMessages.jsx
+    ├── MessageBubble.jsx
+    ├── MessageActions.jsx
+    ├── TypingIndicator.jsx
+    ├── ChatInput.jsx
+    ├── PromptSuggestions.jsx
+    └── EmptyState.jsx
+
+// Chat Features
+features/
+└── chat/
+    ├── useChat.js
+    ├── chatAPI.js
+    ├── chatStore.js
+    └── chatUtils.js
+
+
+// Chat Features and Redux
+src/
+├── store/
+│   └── store.js // npm install @reduxjs/toolkit react-redux
+│
+├── features/
+│   └── chat/
+│       ├── chatSlice.js
+│       ├── useChat.js
+│       ├── chatAPI.js
+│       └── chatUtils.js
+
+// UPLOAD Component and Features
+components/
+├── upload/
+│   ├── UploadButton.jsx
+│   ├── UploadModal.jsx
+│   ├── FileDropzone.jsx
+│   ├── FilePreview.jsx
+│   └── UploadProgress.jsx
+
+features/
+├── upload/
+│   ├── uploadSlice.js
+│   ├── uploadAPI.js
+│   ├── useUpload.js
+│   └── uploadUtils.js
+
+// CONVERSATION
+NEW FILES TO CREATE
+
+src/
+├── features/
+│   └── conversations/
+│       ├── conversationSlice.js
+│       ├── useConversations.js
+│       ├── conversationAPI.js
+│       └── conversationUtils.js
+
+
+
+// STREAMING
+src/
+├── services/
+│   └── stream.js

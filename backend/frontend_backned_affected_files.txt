@@ -1,0 +1,121 @@
+FILES THAT WILL ACTUALLY COMMUNICATE WITH BACKEND
+(These are the MOST important files later)
+
+src/
+├── services/
+│   ├── api.js
+│   └── stream.js
+│
+├── features/
+│   ├── chat/
+│   │   ├── useChat.js
+│   │   └── chatAPI.js
+│   │
+│   ├── upload/
+│   │   ├── useUpload.js
+│   │   └── uploadAPI.js
+│   │
+│   └── conversations/
+│       ├── useConversations.js
+│       └── conversationAPI.js
+
+WHAT EACH BACKEND-COMMUNICATING FILE DOES
+
+services/api.js
+----------------
+Central axios/fetch configuration.
+
+Responsibilities:
+- base URL
+- headers
+- auth tokens later
+- interceptors later
+
+Everything backend-related eventually uses this.
+
+EXAMPLE:
+api.post("/chat")
+
+services/stream.js
+------------------
+Handles token streaming.
+
+Responsibilities:
+- streaming fetch()
+- SSE / ReadableStream
+- token parsing
+- abort controller
+
+This becomes the real ChatGPT-like streaming engine later.
+
+features/chat/chatAPI.js
+------------------------
+ONLY chat backend requests.
+
+Responsibilities:
+- send prompt to backend
+- receive AI response
+- stream responses later
+
+NO UI LOGIC HERE.
+ONLY backend communication.
+
+features/chat/useChat.js
+------------------------
+Frontend business logic layer.
+
+Responsibilities:
+- send messages
+- dispatch redux actions
+- control typing state
+- call chatAPI
+- call stream.js
+
+This is the CHAT CONTROLLER.
+
+features/upload/uploadAPI.js
+----------------------------
+ONLY upload backend requests.
+
+Responsibilities:
+- upload PDFs
+- upload multiple files
+- upload progress later
+
+Talks to FastAPI upload endpoint.
+
+features/upload/useUpload.js
+----------------------------
+Frontend upload controller.
+
+Responsibilities:
+- handle dropped files
+- upload files
+- remove files
+- trigger uploadAPI
+
+Frontend upload logic lives here.
+
+features/conversations/conversationAPI.js
+-----------------------------------------
+Conversation backend requests.
+
+Responsibilities:
+- fetch old chats
+- save chats
+- delete chats
+- rename chats
+
+Not necessary immediately.
+
+features/conversations/useConversations.js
+------------------------------------------
+Conversation frontend controller.
+
+Responsibilities:
+- active chat logic
+- create/delete chats
+- restore chat history
+- call conversationAPI
+
+Mostly frontend state orchestration.
