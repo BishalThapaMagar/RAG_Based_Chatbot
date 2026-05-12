@@ -1,0 +1,212 @@
+npm create vite@latest => my-app => react => javascript
+OR
+npm create vite@latest my-app -- --template react-js
+
+https://tailwindcss.com/docs/installation/using-vite => Follow instructions using vite
+
+
+//  MAKE FOLDERS
+frontend/
+└── src/
+    ├── main.jsx
+    ├── App.jsx
+
+    ├── routes/
+    │   └── AppRoutes.jsx
+
+    ├── layouts/
+    │   └── MainLayout.jsx
+
+    ├── pages/
+    │   └── Home.jsx        # 🔥 your chatbot screen
+
+    ├── components/
+    │   ├── layout/
+    │   │   └── Header.jsx
+    │   │
+    │   └── chat/           # 🔥 chatbot-specific UI
+    │       ├── ChatWindow.jsx
+    │       ├── MessageBubble.jsx
+    │       ├── ChatInput.jsx
+    │       └── Sidebar.jsx (optional like ChatGPT history)
+
+    ├── features/
+    │   └── chat/           # 🔥 logic layer
+    │       ├── chatAPI.js
+    │       ├── chatSlice.js (optional)
+    │       └── useChat.js
+
+    ├── services/
+    │   └── api.js
+
+
+//Main.jsx
+import React from "react";
+import ReactDOM from "react-dom/client";
+import App from "./App";
+
+ReactDOM.createRoot(document.getElementById("root")).render(
+  <App />
+);
+
+//App.jsx
+import AppRoutes from "./routes/AppRoutes";
+
+const App = () => {
+  return <AppRoutes />;
+};
+
+export default App;
+
+
+//routes/AppRoutes.jsx
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import MainLayout from "../layouts/MainLayout";
+import Home from "../pages/Home";
+
+const AppRoutes = () => {
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route element={<MainLayout />}>
+          <Route path="/" element={<Home />} />
+        </Route>
+      </Routes>
+    </BrowserRouter>
+  );
+};
+
+export default AppRoutes;
+
+//layouts/MainLayout.jsx
+import { Outlet } from "react-router-dom";
+import Header from "../components/layout/Header";
+
+const MainLayout = () => {
+  return (
+    <>
+      <Header />
+      <Outlet />
+    </>
+  );
+};
+
+export default MainLayout;
+
+// pages/Home.jsx
+import ChatWindow from "../components/chat/ChatWindow";
+import ChatInput from "../components/chat/ChatInput";
+
+const Home = () => {
+  return (
+    <div style={{ height: "100vh", display: "flex", flexDirection: "column" }}>
+      <ChatWindow />
+      <ChatInput />
+    </div>
+  );
+};
+
+export default Home;
+
+// components/ChatWindow.jsx COMPONENT
+import MessageBubble from "./MessageBubble";
+import { useChat } from "../../features/chat/useChat";
+
+const ChatWindow = () => {
+  const { messages } = useChat();
+
+  return (
+    <div style={{ flex: 1, overflowY: "auto" }}>
+      {messages.map((msg, i) => (
+        <MessageBubble key={i} message={msg} />
+      ))}
+    </div>
+  );
+};
+
+export default ChatWindow;
+
+// LOADING PAGES 
+
+""" The Route which loads main layout only loades the container not the path. Then if the patch matches
+i.e. / it loads the MainLayout layout and Home page inside it, if /About then About page inside it.
+This is nested routing which is dynamice.
+
+Note that MainLayout have <Outlet/> which loads the selected route page i.e. Home, About etc. 
+
+The login page has no header and footer so, seperate layout maybe"""
+
+const AppRoutes = () => {
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route element={<MainLayout />}>
+          <Route path="/" element={<Home />} />             
+          <Route path="/About" element={<About />} />
+          <Route path="/Contact" element={<Contact />} />
+        </Route>
+      </Routes>
+    </BrowserRouter>
+  );
+};
+
+const MainLayout = () => {
+  return (
+    <div className="flex h-screen flex-col bg-[#212121] text-white">
+      <Header />
+
+      <main className="flex-1 overflow-hidden">
+        <Outlet />
+      </main>
+    </div>
+  );
+};
+
+<Route element={<AuthLayout />}>
+  <Route path="/login" element={<Login />} />
+  <Route path="/register" element={<Register />} />
+</Route>
+
+const AuthLayout = () => {
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-zinc-900">
+      <Outlet />
+    </div>
+  );
+};
+
+
+
+// REDUX
+"""Wrap app, Now entire app can access Redux."""
+
+import { Provider } from "react-redux";
+
+<Provider store={store}>
+   <App />
+</Provider>
+
+
+
+import { createSlice } from "@reduxjs/toolkit";
+
+const cartSlice = createSlice({
+  name: "cart",
+
+  initialState: {
+    items: [],
+  },
+
+  reducers: {
+    addItem: (state, action) => {
+      state.items.push(action.payload);
+    },
+  },
+});
+
+export const { addItem } = cartSlice.actions;
+
+export default cartSlice.reducer;
+
+
+dispatch(addItem(product))
