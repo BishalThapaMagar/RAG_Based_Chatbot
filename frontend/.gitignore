@@ -140,3 +140,5 @@ dist/
 # =========================================
 
 alembic/versions/*.pyc
+
+backend/app/uploads/pdfs/*
