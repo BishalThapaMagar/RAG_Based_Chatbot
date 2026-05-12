@@ -1,0 +1,437 @@
+RAG CHATBOT BACKEND PLAN (LANGGRAPH MINIMAL ARCHITECTURE)
+========================================================
+
+ARCHITECTURE GOAL
+-----------------
+Build a scalable LangGraph-based RAG backend with:
+- FastAPI
+- PostgreSQL
+- pgvector
+- LangGraph orchestration
+- Retrieval node
+- Generation node
+- Streaming-ready architecture
+
+Graph Flow:
+START
+  ↓
+retrieval_node
+  ↓
+generation_node
+  ↓
+END
+
+
+
+FINAL BACKEND STRUCTURE
+=======================
+
+backend/
+│
+├── app/
+│   │
+│   ├── main.py
+│   │
+│   ├── api/
+│   │   ├── chat.py
+│   │   ├── upload.py
+│   │   └── health.py
+│   │
+│   ├── core/
+│   │   ├── config.py
+│   │   └── database.py
+│   │
+│   ├── graph/
+│   │   ├── builder.py
+│   │   ├── state.py
+│   │   │
+│   │   └── nodes/
+│   │       ├── retrieval_node.py
+│   │       └── generation_node.py
+│   │
+│   ├── services/
+│   │   ├── llm_service.py
+│   │   ├── vector_service.py
+│   │   ├── embedding_service.py
+│   │   └── pdf_service.py
+│   │
+│   ├── rag/
+│   │   ├── chunking.py
+│   │   ├── embeddings.py
+│   │   └── retriever.py
+│   │
+│   ├── db/
+│   │   └── pgvector.py
+│   │
+│   ├── models/
+│   ├── schemas/
+│   └── uploads/
+│
+├── requirements.txt
+└── .env
+
+
+
+========================================================
+PHASE 1 — FOUNDATION + LANGGRAPH BOOT
+========================================================
+
+Goal:
+- FastAPI works
+- PostgreSQL works
+- LangGraph works
+- Basic graph executes
+
+Files:
+backend/app/
+├── main.py
+├── api/
+│   └── health.py
+├── core/
+│   ├── config.py
+│   └── database.py
+└── graph/
+    ├── builder.py
+    ├── state.py
+    └── nodes/
+        ├── retrieval_node.py
+        └── generation_node.py
+
+Implement:
+- FastAPI app
+- CORS
+- env loading
+- PostgreSQL connection
+- health endpoint
+- LangGraph installation
+- graph state
+- dummy retrieval node
+- dummy generation node
+- graph builder
+- test graph execution
+
+Result:
+- Backend boots successfully
+- /health works
+- /chat invokes LangGraph successfully
+
+
+
+========================================================
+PHASE 2 — GRAPH STATE SYSTEM
+========================================================
+
+Goal:
+- Centralized graph state management
+
+Files:
+backend/app/graph/
+└── state.py
+
+Implement:
+- GraphState TypedDict
+- shared graph state
+- node state updates
+
+Example state:
+- question
+- retrieved_docs
+- response
+
+Result:
+- All graph nodes share/update centralized state
+
+
+
+========================================================
+PHASE 3 — PDF UPLOAD SYSTEM
+========================================================
+
+Goal:
+- Upload PDFs from frontend
+- Extract text from PDFs
+
+Files:
+backend/app/
+├── api/
+│   └── upload.py
+├── services/
+│   └── pdf_service.py
+├── schemas/
+│   └── upload.py
+└── uploads/
+    └── pdfs/
+
+Implement:
+- PDF upload endpoint
+- file validation
+- save PDFs locally
+- PDF text extraction
+
+Recommended:
+- PyMuPDF (fitz)
+
+Result:
+- PDFs upload successfully
+- raw text extraction works
+
+
+
+========================================================
+PHASE 4 — TEXT CHUNKING
+========================================================
+
+Goal:
+- Convert extracted text into retrievable chunks
+
+Files:
+backend/app/rag/
+└── chunking.py
+
+Implement:
+- chunking strategy
+- chunk overlap
+- metadata generation
+- page tracking
+
+Result:
+- Documents become searchable chunks
+
+
+
+========================================================
+PHASE 5 — EMBEDDINGS
+========================================================
+
+Goal:
+- Convert chunks into vector embeddings
+
+Files:
+backend/app/
+├── services/
+│   └── embedding_service.py
+└── rag/
+    └── embeddings.py
+
+Implement:
+- embedding generation
+- Gemini embeddings OR sentence-transformers
+
+Result:
+- Chunks become vector embeddings
+
+
+
+========================================================
+PHASE 6 — PGVECTOR STORAGE
+========================================================
+
+Goal:
+- Store embeddings in PostgreSQL
+
+Files:
+backend/app/
+├── services/
+│   └── vector_service.py
+└── db/
+    └── pgvector.py
+
+Implement:
+- vector insertion
+- vector retrieval
+- cosine similarity search
+- pgvector queries
+
+Result:
+- Vector database retrieval works
+
+
+
+========================================================
+PHASE 7 — RETRIEVAL NODE
+========================================================
+
+Goal:
+- Retrieve relevant chunks inside LangGraph
+
+Files:
+backend/app/graph/nodes/
+└── retrieval_node.py
+
+Flow:
+question
+   ↓
+query embedding
+   ↓
+vector similarity search
+   ↓
+top-k retrieved chunks
+   ↓
+update graph state
+
+Implement:
+- query embeddings
+- similarity search
+- top-k retrieval
+- state updates
+
+Result:
+- Graph retrieves relevant context
+
+
+
+========================================================
+PHASE 8 — GENERATION NODE
+========================================================
+
+Goal:
+- Generate grounded AI responses
+
+Files:
+backend/app/
+├── graph/nodes/
+│   └── generation_node.py
+├── services/
+│   └── llm_service.py
+└── rag/
+    └── prompts.py
+
+Flow:
+question + retrieved docs
+        ↓
+prompt assembly
+        ↓
+Gemini API
+        ↓
+generated answer
+        ↓
+update graph state
+
+Implement:
+- prompt building
+- context injection
+- Gemini API integration
+- grounded generation
+
+Result:
+- Full RAG response generation works
+
+
+
+========================================================
+PHASE 9 — GRAPH BUILDER
+========================================================
+
+Goal:
+- Connect all graph nodes
+
+Files:
+backend/app/graph/
+└── builder.py
+
+Graph:
+START
+  ↓
+retrieval_node
+  ↓
+generation_node
+  ↓
+END
+
+Implement:
+- graph compilation
+- node registration
+- edge registration
+- graph invocation
+
+Result:
+- Full LangGraph workflow executes properly
+
+
+
+========================================================
+PHASE 10 — FRONTEND CONNECTION
+========================================================
+
+Goal:
+- Connect frontend with backend
+
+Frontend files:
+src/
+├── services/
+│   ├── api.js
+│   └── stream.js later
+│
+├── features/
+│   ├── chat/
+│   │   ├── chatAPI.js
+│   │   └── useChat.js
+│   │
+│   ├── upload/
+│   │   ├── uploadAPI.js
+│   │   └── useUpload.js
+│   │
+│   └── conversations/
+│       └── conversationAPI.js
+
+Implement:
+- upload API calls
+- chat API calls
+- LangGraph invocation from frontend
+- conversation handling
+
+Result:
+- Fullstack RAG chatbot works
+
+
+
+========================================================
+PHASE 11 — STREAMING RESPONSES
+========================================================
+
+Goal:
+- Real-time token streaming
+
+Backend files:
+backend/app/
+├── api/
+│   └── chat.py
+└── services/
+    └── llm_service.py
+
+Frontend files:
+src/services/
+└── stream.js
+
+Implement:
+- FastAPI StreamingResponse
+- Gemini streaming
+- LangGraph streaming
+- frontend token parsing
+- live UI rendering
+
+Result:
+- ChatGPT-like streaming experience
+
+
+
+========================================================
+FUTURE EXPANSION (OPTIONAL)
+========================================================
+
+Possible future nodes:
+- memory_node
+- query_rewrite_node
+- web_search_node
+- citation_node
+- tool_node
+
+Possible future features:
+- long-term memory
+- multi-agent systems
+- web search
+- citations
+- hybrid retrieval
+- reranking
+- conversation persistence
+- human-in-loop workflows

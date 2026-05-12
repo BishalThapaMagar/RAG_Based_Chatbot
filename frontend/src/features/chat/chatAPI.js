@@ -1,47 +1,22 @@
-// TEMP MOCK API
-// Replace later with FastAPI backend
+import API_BASE_URL from "../../services/api";
 
-export const sendMessageAPI = async (
-  message
-) => {
-  console.log("User Message:", message);
+export const sendMessageAPI =
+  async (message) => {
 
-  await new Promise((resolve) =>
-    setTimeout(resolve, 1500)
-  );
+    const response = await fetch(
+      `${API_BASE_URL}/chat?question=${encodeURIComponent(
+        message
+      )}`,
+      {
+        method: "POST",
+      }
+    );
 
-  return {
-    role: "assistant",
+    if (!response.ok) {
+      throw new Error(
+        "Failed to send message"
+      );
+    }
 
-    content: `
-# Transformers Architecture
-
-Transformers are deep learning models designed for sequence processing.
-
-## Main Components
-
-- Encoder
-- Decoder
-- Self Attention
-- Feed Forward Networks
-
-## Example Code
-
-\`\`\`python
-def hello():
-    print("Transformers are powerful")
-\`\`\`
-
-## Why Important?
-
-Transformers power:
-
-1. ChatGPT
-2. Gemini
-3. Claude
-4. Perplexity AI
-
-> Attention is all you need.
-`,
+    return response.json();
   };
-};

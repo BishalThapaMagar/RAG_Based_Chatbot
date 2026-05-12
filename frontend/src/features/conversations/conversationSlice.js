@@ -81,6 +81,7 @@ const conversationSlice = createSlice({
       state,
       action
     ) => {
+
       const {
         conversationId,
         messageId,
@@ -97,14 +98,15 @@ const conversationSlice = createSlice({
 
       const message =
         conversation.messages.find(
-          (msg) => msg.id === messageId
+          (msg) =>
+            msg.id === messageId
         );
 
       if (!message) return;
 
+      // STREAM APPEND
       message.content += content;
     },
-
     // DELETE CHAT
     deleteConversation: (
       state,

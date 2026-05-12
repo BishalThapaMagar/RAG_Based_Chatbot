@@ -1,0 +1,18 @@
+python -m venv venv <=
+source venv/bin/activate <=
+
+pip install --upgrade pip 
+
+sudo systemctl start postgresql // start postgres server <=
+CREATE DATABASE ragdb OWNER blaze;
+GRANT ALL PRIVILEGES ON DATABASE ragdb TO blaze;
+
+sudo -iu postgres psql ragdb // ragdb is database
+CREATE EXTENSION vector;
+\dx // verify
+
+uvicorn app.main:app --reload <=
+http://localhost:8000/health <= testing if api is running
+http://127.0.0.1:8000/docs // for api testing
+
+pip install langgraph langchain langchain-core

@@ -1,4 +1,7 @@
-import { useDispatch, useSelector } from "react-redux";
+import {
+  useDispatch,
+  useSelector,
+} from "react-redux";
 
 import {
   addFiles,
@@ -7,9 +10,15 @@ import {
   setDragActive,
 } from "./uploadSlice";
 
-import { createFileObject } from "./uploadUtils";
+import { createFileObject }
+  from "./uploadUtils";
+
+import { uploadFilesAPI }
+  from "./uploadAPI";
+
 
 const useUpload = () => {
+
   const dispatch = useDispatch();
 
   const files = useSelector(
@@ -22,6 +31,7 @@ const useUpload = () => {
 
   // ADD FILES
   const handleFiles = (fileList) => {
+
     const validFiles = Array.from(fileList)
       .filter(
         (file) =>
@@ -37,6 +47,33 @@ const useUpload = () => {
     dispatch(removeFile(id));
   };
 
+  // REAL BACKEND UPLOAD
+  const uploadFiles = async () => {
+
+    try {
+
+      const rawFiles = files.map(
+        (fileObj) => fileObj.file
+      );
+
+      const response =
+        await uploadFilesAPI(rawFiles);
+
+      console.log(
+        "Upload Success:",
+        response
+      );
+
+      return response;
+
+    } catch (error) {
+
+      console.error(error);
+
+      throw error;
+    }
+  };
+
   return {
     files,
 
@@ -45,6 +82,8 @@ const useUpload = () => {
     handleFiles,
 
     deleteFile,
+
+    uploadFiles,
 
     clearAllFiles: () =>
       dispatch(clearFiles()),
