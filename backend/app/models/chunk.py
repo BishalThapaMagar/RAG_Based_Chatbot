@@ -26,5 +26,5 @@ class Chunk(Base):
     )
 
     embedding = Column(
-        Vector(3072)
+        Vector(768)
     )

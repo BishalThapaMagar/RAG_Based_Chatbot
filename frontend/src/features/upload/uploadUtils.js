@@ -6,8 +6,6 @@ export const createFileObject = (file) => {
   return {
     id: crypto.randomUUID(),
 
-    file,
-
     name: file.name,
 
     size: file.size,

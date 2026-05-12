@@ -1,28 +1,33 @@
-from google import genai
-
+import requests
+import json
 from app.core.config import settings
 
 
-client = genai.Client(
-    api_key=settings.GOOGLE_API_KEY
-)
-
-
 def stream_response(prompt: str):
-
     try:
-        completion = client.models.generate_content(
-            model="gemini-2.0-flash",
-            contents=prompt
+        response = requests.post(
+            f"{settings.OLLAMA_BASE_URL}/api/generate",
+            json={
+                "model": "mistral:latest",
+                "prompt": prompt,
+                "stream": True
+            },
+            stream=True
         )
+        response.raise_for_status()
 
-        if completion and getattr(completion, "text", None):
-            yield completion.text
-        else:
-            raise RuntimeError("No text returned from LLM")
+        for line in response.iter_lines():
+            if line:
+                data = line.decode('utf-8')
+                try:
+                    chunk = json.loads(data)
+                    if 'response' in chunk:
+                        yield chunk['response']
+                    if chunk.get('done', False):
+                        break
+                except json.JSONDecodeError:
+                    continue
 
     except Exception as e:
-        print(
-            f"LLM generation failed: {type(e).__name__}: {e}"
-        )
+        print(f"LLM generation failed: {type(e).__name__}: {e}")
         raise

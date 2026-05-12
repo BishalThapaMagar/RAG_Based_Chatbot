@@ -7,6 +7,8 @@ import {
   setTyping,
 } from "./chatSlice";
 
+import useUpload from "../upload/useUpload";
+
 import { generateMessageId } from "./chatUtils";
 
 import {
@@ -44,6 +46,11 @@ const useChat = () => {
 
   const messages =
     activeConversation?.messages || [];
+
+  const {
+    files,
+    uploadFiles,
+  } = useUpload();
 
   // SEND MESSAGE
   const sendMessage = async (text) => {
@@ -91,6 +98,19 @@ const useChat = () => {
     );
 
     try {
+      if (files.length > 0) {
+        try {
+          await uploadFiles();
+        } catch (uploadError) {
+          console.error(
+            "File upload failed",
+            uploadError
+          );
+          dispatch(setTyping(false));
+          return;
+        }
+      }
+
       dispatch(setTyping(true));
 
       // STREAM RESPONSE

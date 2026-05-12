@@ -8,7 +8,11 @@ import {
   removeFile,
   clearFiles,
   setDragActive,
+  setUploading,
+  setUploadProgress,
 } from "./uploadSlice";
+
+import { useRef } from "react";
 
 import { createFileObject }
   from "./uploadUtils";
@@ -25,6 +29,8 @@ const useUpload = () => {
     (state) => state.upload.files
   );
 
+  const fileRefsMap = useRef({});
+
   const dragActive = useSelector(
     (state) => state.upload.dragActive
   );
@@ -37,27 +43,45 @@ const useUpload = () => {
         (file) =>
           file.type === "application/pdf"
       )
-      .map(createFileObject);
+      .map((file) => {
+        const fileObj = createFileObject(file);
+        fileRefsMap.current[fileObj.id] = file;
+        return fileObj;
+      });
 
     dispatch(addFiles(validFiles));
   };
 
   // REMOVE FILE
   const deleteFile = (id) => {
+    delete fileRefsMap.current[id];
     dispatch(removeFile(id));
   };
 
   // REAL BACKEND UPLOAD
   const uploadFiles = async () => {
+    if (files.length === 0) {
+      return null;
+    }
 
     try {
+      dispatch(setUploading(true));
+      dispatch(setUploadProgress(10));
 
       const rawFiles = files.map(
-        (fileObj) => fileObj.file
-      );
+        (fileObj) => fileRefsMap.current[fileObj.id]
+      ).filter(Boolean);
 
       const response =
         await uploadFilesAPI(rawFiles);
+
+      dispatch(setUploadProgress(100));
+      dispatch(setUploading(false));
+
+      files.forEach((file) => {
+        delete fileRefsMap.current[file.id];
+      });
+      dispatch(clearFiles());
 
       console.log(
         "Upload Success:",
@@ -65,8 +89,9 @@ const useUpload = () => {
       );
 
       return response;
-
     } catch (error) {
+      dispatch(setUploading(false));
+      dispatch(setUploadProgress(0));
 
       console.error(error);
 

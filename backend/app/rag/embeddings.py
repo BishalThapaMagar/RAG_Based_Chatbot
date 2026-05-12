@@ -1,16 +1,15 @@
-from google import genai
+import requests
 from app.core.config import settings
-
-client = genai.Client(
-    api_key=settings.GOOGLE_API_KEY
-)
 
 
 def generate_embedding(text: str):
-
-    response = client.models.embed_content(
-        model="gemini-embedding-001",
-        contents=text
+    response = requests.post(
+        f"{settings.OLLAMA_BASE_URL}/api/embeddings",
+        json={
+            "model": "nomic-embed-text",
+            "prompt": text
+        }
     )
-
-    return response.embeddings[0].values
+    response.raise_for_status()
+    data = response.json()
+    return data["embedding"]

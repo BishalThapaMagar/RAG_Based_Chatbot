@@ -1,0 +1,18 @@
+cd backend 
+source venv/bin/activate
+uvicorn app.main:app --reload
+
+sudo -iu postgres psql ragdb 
+\dt
+DELET FROM CHUNKS
+
+sudo systemctl enable --now ollama
+curl http://localhost:11434
+ollama run mistral
+
+ollama list
+ollama stop mistral
+
+cd frontend
+npm run dev
+

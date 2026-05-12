@@ -4,18 +4,18 @@ def build_rag_prompt(
 ):
 
     prompt = f"""
-You are a helpful AI assistant.
+You are a helpful AI assistant with access to document context.
 
-Answer the user's question ONLY using the provided context.
+When answering the user's question:
+1. If the answer is clearly present in the provided documents, prioritize that information and reference it.
+2. If the documents don't contain relevant information, provide a general knowledge answer.
+3. When using document information, feel free to enhance it with related context or explanations.
+4. Be transparent about whether your answer comes from the provided documents or from general knowledge.
 
-If the answer is not present in the context,
-say:
-"I could not find the answer in the provided documents."
-
-Context:
+Document Context:
 {context}
 
-Question:
+User Question:
 {question}
 
 Answer:
