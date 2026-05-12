@@ -15,7 +15,6 @@ app = FastAPI(
     debug=settings.DEBUG
 )
 
-
 # CORS
 app.add_middleware(
     CORSMiddleware,

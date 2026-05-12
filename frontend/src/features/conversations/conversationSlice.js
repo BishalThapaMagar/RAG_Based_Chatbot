@@ -1,9 +1,11 @@
 import { createSlice } from "@reduxjs/toolkit";
 
+const defaultConversationId = crypto.randomUUID();
+
 const initialState = {
   conversations: [
     {
-      id: crypto.randomUUID(),
+      id: defaultConversationId,
 
       title: "New Chat",
 
@@ -11,7 +13,7 @@ const initialState = {
     },
   ],
 
-  activeConversationId: null,
+  activeConversationId: defaultConversationId,
 };
 
 const conversationSlice = createSlice({

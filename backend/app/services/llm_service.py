@@ -10,12 +10,19 @@ client = genai.Client(
 
 def stream_response(prompt: str):
 
-    response = client.models.generate_content_stream(
-        model="gemini-2.0-flash",
-        contents=prompt
-    )
+    try:
+        completion = client.models.generate_content(
+            model="gemini-2.0-flash",
+            contents=prompt
+        )
 
-    for chunk in response:
+        if completion and getattr(completion, "text", None):
+            yield completion.text
+        else:
+            raise RuntimeError("No text returned from LLM")
 
-        if chunk.text:
-            yield chunk.text
+    except Exception as e:
+        print(
+            f"LLM generation failed: {type(e).__name__}: {e}"
+        )
+        raise

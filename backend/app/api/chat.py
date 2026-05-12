@@ -1,5 +1,5 @@
-from fastapi import APIRouter
-from fastapi.responses import StreamingResponse
+from fastapi import APIRouter, HTTPException
+from fastapi.responses import Response
 
 from app.rag.retriever import retrieve_chunks
 
@@ -21,6 +21,11 @@ async def chat(question: str):
     db = SessionLocal()
 
     try:
+        if not question or not question.strip():
+            raise HTTPException(
+                status_code=400,
+                detail="Question cannot be empty"
+            )
 
         retrieved_chunks = retrieve_chunks(
             db=db,
@@ -38,12 +43,30 @@ async def chat(question: str):
             context=context
         )
 
-        generator = stream_response(prompt)
+        full_response = "".join(stream_response(prompt))
 
-        return StreamingResponse(
-            generator,
+        return Response(
+            content=full_response,
             media_type="text/plain"
         )
 
+    except HTTPException:
+        raise
+    except Exception as e:
+        error_detail = str(e)
+        print(
+            f"Error in chat endpoint: {type(e).__name__} - {error_detail}"
+        )
+
+        if "RESOURCE_EXHAUSTED" in error_detail or "429" in error_detail:
+            raise HTTPException(
+                status_code=429,
+                detail=f"LLM quota exceeded: {error_detail}"
+            )
+
+        raise HTTPException(
+            status_code=500,
+            detail=f"LLM service error: {error_detail}"
+        )
     finally:
         db.close()
