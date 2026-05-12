@@ -1,0 +1,232 @@
+PHASE 1 — PROJECT FOUNDATION
+Goal:
+- App boots properly
+- Routing works
+- Global layout works
+- Dark theme established
+
+Files:
+src/
+├── main.jsx
+├── App.jsx
+├── index.css
+│
+├── routes/
+│   └── AppRoutes.jsx
+│
+├── layouts/
+│   └── MainLayout.jsx
+
+Connections:
+main.jsx
+   ↓
+App.jsx
+   ↓
+AppRoutes.jsx
+   ↓
+MainLayout.jsx
+   ↓
+Pages render through <Outlet />
+
+Responsibilities:
+- main.jsx → React entry point
+- App.jsx → loads routes
+- AppRoutes.jsx → route definitions
+- MainLayout.jsx → global app shell/layout
+
+
+
+PHASE 2 — CHATGPT STYLE APP SHELL
+Goal:
+- Build permanent UI structure visible across app
+
+Files:
+components/
+├── layout/
+│   ├── Sidebar.jsx
+│   ├── MobileSidebar.jsx
+│   ├── Header.jsx
+│   └── MainContainer.jsx
+
+Structure:
+MainLayout
+ ├── Sidebar
+ ├── Header
+ └── Outlet (current page)
+
+Responsibilities:
+- Sidebar.jsx → chat history, new chat, navigation
+- MobileSidebar.jsx → responsive sidebar
+- Header.jsx → model selector, profile, upload button
+- MainContainer.jsx → width, spacing, scrolling
+
+
+
+PHASE 3 — CHAT SCREEN
+Goal:
+- Build actual chatbot interface
+
+Files:
+pages/
+└── ChatPage.jsx
+
+components/chat/
+├── Chat.jsx
+├── ChatMessages.jsx
+├── MessageBubble.jsx
+├── MessageActions.jsx
+├── TypingIndicator.jsx
+├── ChatInput.jsx
+├── PromptSuggestions.jsx
+└── EmptyState.jsx
+
+Responsibilities:
+- Chat.jsx → main orchestrator
+- ChatMessages.jsx → renders messages list
+- MessageBubble.jsx → single message UI
+- MessageActions.jsx → copy, retry, edit
+- TypingIndicator.jsx → AI typing animation
+- ChatInput.jsx → textarea + send button
+- PromptSuggestions.jsx → starter prompts
+- EmptyState.jsx → initial landing UI
+
+
+
+PHASE 4 — STATE MANAGEMENT & CHAT LOGIC
+Goal:
+- Separate UI from business logic
+
+Files:
+features/chat/
+├── useChat.js
+├── chatAPI.js
+├── chatStore.js
+└── chatUtils.js
+
+Responsibilities:
+- useChat.js → frontend chat logic
+- chatAPI.js → backend communication
+- chatStore.js → global chat state
+- chatUtils.js → helper functions
+
+
+
+PHASE 5 — FILE UPLOAD SYSTEM
+Goal:
+- Prepare RAG upload UI
+
+Files:
+components/upload/
+├── UploadButton.jsx
+├── UploadModal.jsx
+├── FileDropzone.jsx
+├── FilePreview.jsx
+└── UploadProgress.jsx
+
+Responsibilities:
+- UploadButton.jsx → trigger uploads
+- UploadModal.jsx → upload popup/modal
+- FileDropzone.jsx → drag-and-drop area
+- FilePreview.jsx → uploaded file cards
+- UploadProgress.jsx → upload progress bar
+
+
+
+PHASE 6 — ADVANCED MESSAGE RENDERING
+Goal:
+- Make AI responses professional
+
+Files:
+components/message/
+├── MarkdownRenderer.jsx
+├── CodeBlock.jsx
+├── CitationCard.jsx
+├── SourcePreview.jsx
+└── ThinkingBlock.jsx
+
+Responsibilities:
+- MarkdownRenderer.jsx → render markdown
+- CodeBlock.jsx → syntax highlighted code
+- CitationCard.jsx → RAG source references
+- SourcePreview.jsx → source chunk preview
+- ThinkingBlock.jsx → reasoning/thinking UI
+
+
+
+PHASE 7 — CONVERSATION SYSTEM
+Goal:
+- Multi-chat support
+
+Files:
+features/conversations/
+├── useConversations.js
+├── conversationAPI.js
+└── conversationStore.js
+
+Responsibilities:
+- useConversations.js → conversation logic
+- conversationAPI.js → backend requests
+- conversationStore.js → chat history state
+
+Features:
+- multiple chats
+- rename chat
+- delete chat
+- restore history
+
+
+
+PHASE 8 — STREAMING SYSTEM
+Goal:
+- Real-time token streaming
+
+Files:
+services/
+├── api.js
+└── stream.js
+
+Responsibilities:
+- api.js → axios/fetch setup
+- stream.js → streaming responses handling
+
+Features:
+- token-by-token responses
+- abort generation
+- live updates
+
+
+
+PHASE 9 — UI POLISH & UX
+Goal:
+- Make app feel premium
+
+Features:
+- animations
+- smooth scrolling
+- mobile responsiveness
+- keyboard shortcuts
+- resizing panels
+- optimistic UI
+- theme system
+- loading states
+- hover states
+
+
+
+PHASE 10 — FUTURE AGENTIC EXPANSION
+Goal:
+- Add agents/tools/workflows later
+
+Future folders:
+components/
+├── agents/
+├── tools/
+└── workflows/
+
+Possible features:
+- web search
+- tool execution
+- reasoning traces
+- multi-agent workflows
+- task planning
+- memory systems
