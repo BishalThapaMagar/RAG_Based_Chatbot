@@ -16,7 +16,10 @@ router = APIRouter()
 
 
 @router.post("/chat")
-async def chat(question: str):
+async def chat(
+    question: str,
+    conversation_id: str | None = None
+):
 
     db = SessionLocal()
 
@@ -30,7 +33,8 @@ async def chat(question: str):
         retrieved_chunks = retrieve_chunks(
             db=db,
             question=question,
-            top_k=5
+            top_k=5,
+            conversation_id=conversation_id
         )
 
         context = "\n\n".join(

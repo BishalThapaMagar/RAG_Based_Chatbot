@@ -116,6 +116,7 @@ const useChat = () => {
       // STREAM RESPONSE
       await streamResponse({
         message: text,
+        conversationId: activeConversationId,
 
         onChunk: (chunk) => {
           dispatch(

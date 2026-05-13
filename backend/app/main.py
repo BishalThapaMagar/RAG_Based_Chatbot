@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from sqlalchemy import text
 
 from app.core.config import settings
 from app.api.health import router as health_router
@@ -36,4 +37,11 @@ app.include_router(chat_router)
 app.include_router(upload_router)
 
 Base.metadata.create_all(bind=engine)
+
+with engine.connect() as connection:
+    connection.execute(
+        text(
+            "ALTER TABLE IF EXISTS chunks ADD COLUMN IF NOT EXISTS conversation_id VARCHAR"
+        )
+    )
 

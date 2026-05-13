@@ -3,6 +3,7 @@ import API_BASE_URL from "./api";
 export const streamResponse =
   async ({
     message,
+    conversationId,
 
     onChunk,
 
@@ -16,6 +17,8 @@ export const streamResponse =
       const response = await fetch(
         `${API_BASE_URL}/chat?question=${encodeURIComponent(
           message
+        )}&conversation_id=${encodeURIComponent(
+          conversationId || ""
         )}`,
         {
           method: "POST",

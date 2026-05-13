@@ -20,6 +20,12 @@ class Chunk(Base):
         nullable=False
     )
 
+    conversation_id = Column(
+        String,
+        nullable=True,
+        index=True
+    )
+
     content = Column(
         Text,
         nullable=False

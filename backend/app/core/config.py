@@ -1,4 +1,5 @@
 from pydantic_settings import BaseSettings
+from pydantic import field_validator
 from functools import lru_cache
 
 
@@ -19,6 +20,20 @@ class Settings(BaseSettings):
     DEBUG: bool = False
 
     OLLAMA_BASE_URL: str = "http://localhost:11434"
+
+    @field_validator("DEBUG", mode="before")
+    @classmethod
+    def parse_debug(cls, value):
+        if isinstance(value, str):
+            normalized = value.strip().lower()
+
+            if normalized in {"release", "prod", "production"}:
+                return False
+
+            if normalized in {"debug", "dev", "development"}:
+                return True
+
+        return value
 
     class Config:
         env_file = ".env"

@@ -10,6 +10,7 @@ def insert_chunk(
 
     chunk = Chunk(
         chunk_id=chunk_data["chunk_id"],
+        conversation_id=chunk_data.get("conversation_id"),
         content=chunk_data["content"],
         embedding=chunk_data["embedding"]
     )
@@ -26,11 +27,19 @@ def insert_chunk(
 def similarity_search(
     db: Session,
     query_embedding,
-    top_k: int = 5
+    top_k: int = 5,
+    conversation_id: str | None = None
 ):
 
+    query = db.query(Chunk)
+
+    if conversation_id is not None:
+        query = query.filter(
+            Chunk.conversation_id == conversation_id
+        )
+
     results = (
-        db.query(Chunk)
+        query
         .order_by(
             Chunk.embedding.cosine_distance(
                 query_embedding

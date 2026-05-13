@@ -4,7 +4,7 @@ uvicorn app.main:app --reload
 
 sudo -iu postgres psql ragdb 
 \dt
-DELET FROM CHUNKS
+DELETE FROM CHUNKS
 
 sudo systemctl enable --now ollama
 curl http://localhost:11434

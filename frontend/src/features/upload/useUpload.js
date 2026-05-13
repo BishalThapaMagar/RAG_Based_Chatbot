@@ -12,14 +12,14 @@ import {
   setUploadProgress,
 } from "./uploadSlice";
 
-import { useRef } from "react";
-
 import { createFileObject }
   from "./uploadUtils";
 
 import { uploadFilesAPI }
   from "./uploadAPI";
 
+
+const fileRefsMap = new Map();
 
 const useUpload = () => {
 
@@ -29,7 +29,9 @@ const useUpload = () => {
     (state) => state.upload.files
   );
 
-  const fileRefsMap = useRef({});
+  const activeConversationId = useSelector(
+    (state) => state.conversations.activeConversationId
+  );
 
   const dragActive = useSelector(
     (state) => state.upload.dragActive
@@ -45,7 +47,7 @@ const useUpload = () => {
       )
       .map((file) => {
         const fileObj = createFileObject(file);
-        fileRefsMap.current[fileObj.id] = file;
+        fileRefsMap.set(fileObj.id, file);
         return fileObj;
       });
 
@@ -54,7 +56,7 @@ const useUpload = () => {
 
   // REMOVE FILE
   const deleteFile = (id) => {
-    delete fileRefsMap.current[id];
+    fileRefsMap.delete(id);
     dispatch(removeFile(id));
   };
 
@@ -69,17 +71,23 @@ const useUpload = () => {
       dispatch(setUploadProgress(10));
 
       const rawFiles = files.map(
-        (fileObj) => fileRefsMap.current[fileObj.id]
+        (fileObj) => fileRefsMap.get(fileObj.id)
       ).filter(Boolean);
 
+      if (rawFiles.length === 0) {
+        throw new Error(
+          "Selected files are no longer available. Please attach them again."
+        );
+      }
+
       const response =
-        await uploadFilesAPI(rawFiles);
+        await uploadFilesAPI(rawFiles, activeConversationId);
 
       dispatch(setUploadProgress(100));
       dispatch(setUploading(false));
 
       files.forEach((file) => {
-        delete fileRefsMap.current[file.id];
+        fileRefsMap.delete(file.id);
       });
       dispatch(clearFiles());
 
@@ -110,8 +118,10 @@ const useUpload = () => {
 
     uploadFiles,
 
-    clearAllFiles: () =>
-      dispatch(clearFiles()),
+    clearAllFiles: () => {
+      fileRefsMap.clear();
+      dispatch(clearFiles());
+    },
 
     setDrag: (value) =>
       dispatch(setDragActive(value)),

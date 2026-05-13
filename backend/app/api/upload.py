@@ -2,6 +2,7 @@ from fastapi import (
     APIRouter,
     UploadFile,
     File,
+    Form,
     HTTPException,
     Depends
 )
@@ -36,27 +37,42 @@ router = APIRouter()
     response_model=UploadResponse
 )
 async def upload_pdf(
-    file: UploadFile = File(...),
+    files: list[UploadFile] = File(...),
+    conversation_id: str | None = Form(None),
     db: Session = Depends(get_db)
 ):
 
-    if file.content_type != "application/pdf":
+    if not files:
         raise HTTPException(
             status_code=400,
-            detail="Only PDF files allowed"
+            detail="No files uploaded"
         )
 
-    file_path, filename = await save_pdf(file)
+    all_embedded_chunks = []
 
-    extracted_text = extract_pdf_text(file_path)
+    for file in files:
+        if file.content_type != "application/pdf":
+            raise HTTPException(
+                status_code=400,
+                detail="Only PDF files allowed"
+            )
 
-    chunks = chunk_text(extracted_text)
+        file_path, filename = await save_pdf(file)
 
-    embedded_chunks = embed_chunks(chunks)
+        extracted_text = extract_pdf_text(file_path)
+
+        chunks = chunk_text(extracted_text)
+
+        embedded_chunks = embed_chunks(chunks)
+
+        for chunk in embedded_chunks:
+            chunk["conversation_id"] = conversation_id
+
+        all_embedded_chunks.extend(embedded_chunks)
 
     store_embeddings(
         db,
-        embedded_chunks
+        all_embedded_chunks
     )
 
     embedding_dimension = len(
